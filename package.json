@@ -1,0 +1,27 @@
+{
+  "name": "videogameapi",
+  "version": "1.0.0",
+  "description": "api of videogamecollection",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bochereau/VideoGameAPI.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bochereau/VideoGameAPI/issues"
+  },
+  "homepage": "https://github.com/Bochereau/VideoGameAPI#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.9",
+    "mongoose": "^5.12.13",
+    "nodemon": "^2.0.7"
+  }
+}

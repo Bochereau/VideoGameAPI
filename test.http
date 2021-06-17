@@ -1,0 +1,2 @@
+POST http://localhost:8626/user/get
+Content-Type: application/json
