@@ -23,6 +23,21 @@ app.use("/hardware", hardwareRoute);
 app.use("/videogame", videogameRoute);
 
 
+// If no requests went through
+app.use((_req, _res, next) => {
+  const error = new Error("Not found yet");
+  error.status = 404;
+  next(error);
+});
+app.use((error, res) => {
+  res.status(error.status || 500);
+  res.json({
+    error: {
+      message: error.message,
+    },
+  });
+});
+
 // Listening to server
 const PORT = process.env.PORT || 5000;
 

@@ -16,8 +16,7 @@ router.post('/add', async (req, res) => {
     const addHardware = new Hardware({
       name: req.body.name,
       company: req.body.company,
-      // _userId = req.body._userId;
-      _userId: "60c9aa80a520a563aa3077ba",
+      _userId: req.body.userId,
     });
     addHardware.save()
     .then(data => {
@@ -34,8 +33,7 @@ router.post('/add', async (req, res) => {
 // get all hardware route
 router.get('/', async (req, res) => {
   try {
-    // const userId = req.body._userId;
-    const userId = "60c9aa80a520a563aa3077ba";
+    const userId = req.body.userId;
     const hardware = await Hardware.find({ _userId: userId });
     return res.status(201).json(hardware);
   } catch (err) {
