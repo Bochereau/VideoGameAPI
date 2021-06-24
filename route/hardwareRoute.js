@@ -20,6 +20,7 @@ router.post('/add', async (req, res) => {
     });
     addHardware.save()
     .then(data => {
+      console.log("new hardware added")
       res.json(data);
     })
     .catch(error => {
@@ -33,8 +34,8 @@ router.post('/add', async (req, res) => {
 // get all hardware route
 router.get('/', async (req, res) => {
   try {
-    const userId = req.body.userId;
-    const hardware = await Hardware.find({ _userId: userId });
+    // const userId = req.body.userId;
+    const hardware = await Hardware.find({});
     return res.status(201).json(hardware);
   } catch (err) {
     console.log(err.message);

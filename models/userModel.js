@@ -21,7 +21,6 @@ const userSchema = new Schema ({
     type: String,
     required: [true, 'Veuillez entrer un mot de passe'],
     minlength: [6, 'Votre mot de passe doit contenir au moins 6 caractères'],
-    select: false,
   },
   created_at: {
     type: Date,
