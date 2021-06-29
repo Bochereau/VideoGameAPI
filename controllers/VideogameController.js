@@ -1,10 +1,10 @@
 // videogame model require
 const Videogame = require('../models/videogameModel');
 
-// request to find allvideogames
+// request to find allvideogames by user
 exports.getAllVideogames = async (req, res) => {
   try {
-    const videogame = await Videogame.find({}).sort('name');
+    const videogame = await Videogame.find({ _userId: req.body.userData.userId }).sort('name');
     return res.status(201).json(videogame);
   } catch (err) {
     console.log(err.message);
@@ -23,7 +23,7 @@ exports.getVideogameById = async (req, res) => {
   }
 }
 
-// request to add a new videogame to DB
+// request to add a new videogame to DB by user
 exports.addVideogame = async (req, res) => {
   const addVideogame = new Videogame({
     name: req.body.name,
@@ -31,7 +31,7 @@ exports.addVideogame = async (req, res) => {
     editor: req.body.editor,
     developer: req.body.developer,
     release: req.body.release,
-    _userId: "60c9aa80a520a563aa3077ba",
+    _userId: req.body.userData.userId,
   });
   addVideogame.save()
   .then(data => {
@@ -87,6 +87,7 @@ exports.updateVideogame = async (req, res) => {
     return res.status(404).json({err: 'Videogame is not found'})
   }
 }
+
 
 // request to delete one videogame by id
 exports.deleteVideogame = async (req, res) => {

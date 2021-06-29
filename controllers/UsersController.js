@@ -15,16 +15,16 @@ exports.user_create_user = async (req, res) => {
     // validate unique email
     const sameMailUser = await User.find({ email });
     if (sameMailUser.length > 0) {
-      return res.status(500).json({ message: "The email adress "+sameMailUser[0].email+" is already used"})
+      return res.status(500).json({ message: "L'adresse email "+sameMailUser[0].email+" est déjà utilisée"});
     }
     // validate unique pseudo
     const samePseudoUser = await User.find({ pseudo });
     if (samePseudoUser.length > 0) {
-      return res.status(500).json({ message: "The nickname "+samePseudoUser[0].email+" is already used"})
+      return res.status(500).json({ message: "Le pseudo "+samePseudoUser[0].pseudo+" est déjà utilisé"});
     }
     // generate encryption key
     const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hashSync(password, salt);
     // create new User model
     const signedUpUser = new User({
       pseudo,
@@ -34,7 +34,7 @@ exports.user_create_user = async (req, res) => {
     // saving user in DB
     await signedUpUser.save()
     .then(user => {
-      res.status(201).json({ message: "User added to DB", user});
+      res.status(201).json({ message: "Inscription réussie, vous pouvez vous connecter", user});
     })
     .catch(err => {
       return res.status(500).json({ message: "Something went wrong", err });
@@ -47,34 +47,29 @@ exports.user_create_user = async (req, res) => {
 // user login
 exports.user_login = async (req, res) => {
   try {
-    const user = await User.findOne({ pseudo: req.body.pseudo});
-
-    bcrypt.compareAsync(req.body.password, user.password, (err, res) => {
-      if (err) {
-        return res.status(401).json({
-          message: "Not good",
-          err,
-        });
+    const user = await User.findOne({ pseudo: req.body.pseudo}).exec();
+    if(!user) {
+      return res.status(400).send({ message: "Le pseudo n'éxiste pas" });
+    }
+    if(!bcrypt.compareSync(req.body.password, user.password)) {
+      return res.status(400).send({ message: "Le mot de passe est invalide" });
+    }
+    const token = jwt.sign(
+      {
+        email: user.email,
+        userId: user._id,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "1h",
       }
-      else {
-        const token = jwt.sign(
-          {
-            email: user.email,
-            id: user._id,
-          },
-          process.env.ACCESS_TOKEN_SECRET,
-          {
-            expiresIn: "1h",
-          }
-        );
-        return res.status(200).json({
-          message: "Authentication successful",
-          token,
-        });
-      }
-    })
+    );
+    return res.status(200).json({
+      message: "Authentification réussie",
+      token,
+    });
   } catch (err) {
-    res.status(401).json({ message: "Authentication failed", err });
+    res.status(500).send({ message: "L'authentification a échoué", err });
   }
 }
 

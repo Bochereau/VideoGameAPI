@@ -1,25 +1,26 @@
 const express = require('express');
 const router = express.Router();
 
+// checkAuth
+const checkAuth = require("../middleware/checkAuth");
+
 // Videogame controller required
 const VideogameController = require('../controllers/VideogameController');
 
+// route to get all videogames
+router.get('/', checkAuth, VideogameController.getAllVideogames);
 
-// get all videogames route
-router.get('/', VideogameController.getAllVideogames);
+// route to get one videogame by id
+router.get('/:id', checkAuth, VideogameController.getVideogameById);
 
-// get one videogame by id
-router.get('/:id', VideogameController.getVideogameById);
+// route to add videogame
+router.post('/add', checkAuth, VideogameController.addVideogame);
 
-// add videogame route
-router.post('/add', VideogameController.addVideogame);
+// route to update videogame by id 
+router.put('/:id', checkAuth, VideogameController.updateVideogame);
 
-// update videogame route
-router.put('/:id', VideogameController.updateVideogame)
+// route to delete videogame by id
+router.delete('/:id', checkAuth, VideogameController.deleteVideogame);
 
-// delete videogame by id route
-router.delete('/:id', VideogameController.deleteVideogame);
-
-
-
+// export videogame router
 module.exports = router;
