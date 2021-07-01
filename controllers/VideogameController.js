@@ -33,10 +33,10 @@ exports.addVideogame = async (req, res) => {
     release: req.body.release,
     _userId: req.body.userData.userId,
   });
-  addVideogame.save()
+  await addVideogame.save()
   .then(data => {
     console.log("new game added");
-    res.json(data);
+    res.status(201).json({ message: "Le jeu "+name+" a bien été ajouté", data});
   })
   .catch(error => {
     res.json(error);

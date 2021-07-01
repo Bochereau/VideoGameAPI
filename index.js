@@ -16,11 +16,13 @@ connectDB();
 const usersRoute = require('./route/userRoute');
 const hardwareRoute = require('./route/hardwareRoute');
 const videogameRoute = require('./route/videogameRoute');
+const wishlistRoute = require('./route/wishlistRoute');
 
 // ROUTES
 app.use("/user", usersRoute);
 app.use("/hardware", hardwareRoute);
 app.use("/videogame", videogameRoute);
+app.use("/wishlist", wishlistRoute);
 
 
 // If no requests went through
