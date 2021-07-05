@@ -1,9 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-// checkAuth
-const checkAuth = require("../middleware/checkAuth");
-
 // User model require
 const User = require('../models/userModel');
 
@@ -34,13 +31,13 @@ exports.user_create_user = async (req, res) => {
     // saving user in DB
     await signedUpUser.save()
     .then(user => {
-      res.status(201).json({ message: "Inscription réussie, vous pouvez vous connecter", user});
+      res.status(201).json({ message: "Inscription réussie, vous pouvez desormais vous connecter", user});
     })
     .catch(err => {
-      return res.status(500).json({ message: "Something went wrong", err });
+      return res.status(500).json({ message: "Une erreur s'est produite", err });
     })
   } catch (err) {
-    return res.status(500).json({ message: "Something went wrong", err});
+    return res.status(500).json({ message: "Une erreur s'est produite", err});
   }
 }
 

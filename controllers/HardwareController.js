@@ -7,8 +7,7 @@ exports.getAllHardware = async (req, res) => {
     const hardware = await Hardware.find({ _userId: req.body.userData.userId });
     return res.status(201).json(hardware);
   } catch (err) {
-    console.log(err.message);
-    return res.status(500).json({error: 'Something went wrong'});
+    return res.status(500).json({error: "Une erreur s'est produite"});
   }
 };
 
@@ -18,7 +17,7 @@ exports.addHardware = async (req, res) => {
     const newHardware = req.body.name;
     const sameHardware = await Hardware.find({ _userId: req.body.userData.userId, name: newHardware });
     if (sameHardware.length > 0) {
-      return res.status(500).json({ message: "The hardware "+sameHardware[0].name+" as already been added"});
+      return res.status(500).json({ message: "La console "+sameHardware[0].name+" à déjà été ajoutée"});
     }
     const addHardware = new Hardware({
       name: newHardware,
@@ -28,13 +27,10 @@ exports.addHardware = async (req, res) => {
     addHardware.save()
     .then(data => {
       console.log("new hardware added");
-      res.status(201).json({message: "La console "+newHardware+" a bien été ajoutée", data});
-    })
-    .catch(error => {
-      res.json(error);
+      return res.status(201).json({message: "La console "+addHardware.name+" a bien été ajoutée", data});
     })
   } catch (err) {
-    return res.status(500).json({ message: "Something went wrong", err});
+    return res.status(500).json({ message: "Une erreur s'est produite", err});
   }
 };
 

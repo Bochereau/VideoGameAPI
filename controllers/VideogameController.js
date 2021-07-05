@@ -7,8 +7,7 @@ exports.getAllVideogames = async (req, res) => {
     const videogame = await Videogame.find({ _userId: req.body.userData.userId }).sort('name');
     return res.status(201).json(videogame);
   } catch (err) {
-    console.log(err.message);
-    return res.status(500).json({error: 'Something went wrong'});
+    return res.status(404).json({error: "Nous ne parvenons pas à trouver votre liste de jeux"});
   }
 }
 
@@ -18,39 +17,33 @@ exports.getVideogameById = async (req, res) => {
     const videogame = await Videogame.findById(req.params.id);
     return res.status(201).json(videogame);
   } catch (err) {
-    console.log(err.message);
-    return res.status(500).json({error: 'Something went wrong'});
+    return res.status(500).json({error: "Une erreur s'est produite"});
   }
 }
 
 // request to add a new videogame to DB by user
 exports.addVideogame = async (req, res) => {
-  const addVideogame = new Videogame({
-    name: req.body.name,
-    hardware: req.body.hardware,
-    editor: req.body.editor,
-    developer: req.body.developer,
-    release: req.body.release,
-    _userId: req.body.userData.userId,
-  });
-  await addVideogame.save()
-  .then(data => {
-    console.log("new game added");
-    res.status(201).json({ message: "Le jeu "+name+" a bien été ajouté", data});
-  })
-  .catch(error => {
-    res.json(error);
-  })
+  try {
+    const addVideogame = new Videogame({
+      name: req.body.name,
+      hardware: req.body.hardware,
+      editor: req.body.editor,
+      developer: req.body.developer,
+      release: req.body.release,
+      _userId: req.body.userData.userId,
+    });
+    await addVideogame.save()
+    .then(data => {
+      return res.status(201).json({ message: "Le jeu "+addVideogame.name+" a bien été ajouté", data});
+    })
+  } catch (err) {
+    return res.status(500).json({ message: "Une erreur s'est produite", err});
+  }
 }
 
 // request to patch one videogame by id
 exports.updateVideogame = async (req, res) => {
   const {
-    name,
-    hardware,
-    editor,
-    developer,
-    release,
     finished,
     box,
     manual,
@@ -60,45 +53,34 @@ exports.updateVideogame = async (req, res) => {
   } = req.body;
   try {
     const videogame = await Videogame.findById(req.params.id);
-    console.log(videogame);
-    videogame.name = name || videogame.name;
-    videogame.hardware = hardware || videogame.hardware;
-    videogame.editor = editor || videogame.editor;
-    videogame.developer = developer || videogame.developer;
-    videogame.release = release || videogame.release;
-    videogame.finished = finished || videogame.finished;
-    videogame.box = box || videogame.box;
-    videogame.manual = manual || videogame.manual;
-    videogame.physical = physical || videogame.physical;
-    videogame.demat = demat || videogame.demat;
-    videogame.description = description || videogame.description;
+    videogame.finished = finished;
+    videogame.box = box;
+    videogame.manual = manual;
+    videogame.physical = physical;
+    videogame.demat = demat;
+    videogame.description = description;
     // const errors = await videogame.validate();
     // if (errors.length > 0) throw errors;
     await videogame.save()
     .then (data => {
-      console.log('game updated');
-      return res.json(data);
+      return res.status(201).json(data);
     })
     .catch(error => {
       res.json(error);
     })
   }
   catch (err) {
-    return res.status(404).json({err: 'Videogame is not found'})
+    return res.status(404).json({err: 'Le jeu est introuvable'})
   }
 }
-
 
 // request to delete one videogame by id
 exports.deleteVideogame = async (req, res) => {
   try {
     const videogame = await Videogame.findById(req.params.id);
     await videogame.remove();
-    res.send({ data: true });
-    console.log("game deleted");
+    return res.status(201).json({ message: "Le jeu "+videogame.name+" a bien été supprimé" });
   } catch (err) {
-    return res.status(404).json({err: 'Videogame is not found'})
+    return res.status(404).json({err: 'Le jeu est introuvable'})
   }
 }
-
-
